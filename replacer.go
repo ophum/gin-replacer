@@ -28,14 +28,18 @@ func (w *replacerWriter) Write(b []byte) (int, error) {
 	oldLen := len(b)
 	b = []byte(w.replacer.Replace(string(b)))
 	newLen := len(b)
-	if err := w.adjustContentLength(oldLen, newLen); err != nil {
-		return 0, err
+
+	contentLength := w.ResponseWriter.Header().Get("Content-Length")
+	if contentLength != "" {
+		if err := w.adjustContentLength(contentLength, oldLen, newLen); err != nil {
+			return 0, err
+		}
 	}
 	return w.ResponseWriter.Write(b)
 }
 
-func (w *replacerWriter) adjustContentLength(oldLen, newLen int) error {
-	contentLength, err := strconv.ParseInt(w.ResponseWriter.Header().Get("Content-Length"), 10, 64)
+func (w *replacerWriter) adjustContentLength(currentContentLength string, oldLen, newLen int) error {
+	contentLength, err := strconv.ParseInt(currentContentLength, 10, 64)
 	if err != nil {
 		return err
 	}
