@@ -1,0 +1,24 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>gin-replacer example</title>
+</head>
+<body>
+index.jsの`%APIBASEURL%`を`http://localhost:8080/api`に置き換えます。<br>
+index.js:
+<pre><code id="source"></core></pre>
+
+
+response:
+<div id="response"></div>
+<button id="requestButton">request!</button>
+<script src="/index.js"></script>
+<script>
+        fetch("/index.js").
+            then((res) => res.text()).
+            then(text =>
+                document.getElementById("source").innerText = text
+            )
+</script>
+</body>
+</html>
